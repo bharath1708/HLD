@@ -1,0 +1,98 @@
+<svg width="100%" viewBox="0 0 720 520" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="arG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="#00897b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<style>
+.teal{fill:#e0f2f1;stroke:#00897b;}
+.purple{fill:#ede7f6;stroke:#5e35b1;}
+.red{fill:#ffebee;stroke:#c62828;}
+.gray{fill:#f5f5f5;stroke:#757575;}
+.th{font-size:12px;font-weight:600;fill:#222;}
+.ts{font-size:10px;fill:#444;}
+.tn{font-size:9px;fill:#888;}
+.arr{stroke:#555;stroke-width:1.4;fill:none;}
+.arrG{stroke:#00897b;stroke-width:1.6;fill:none;}
+</style>
+</defs>
+
+<text class="th" x="360" y="20" text-anchor="middle" font-size="13">Chat real-time routing (targeted, via Redis registry + pub/sub)</text>
+
+<!-- User A -->
+<rect class="gray" x="20" y="70" width="80" height="40" rx="8" stroke-width="1.2"/>
+<text class="ts" x="60" y="94" text-anchor="middle">User A</text>
+
+<!-- Gateway 1 -->
+<rect class="purple" x="150" y="60" width="130" height="60" rx="8" stroke-width="1.2"/>
+<text class="th" x="215" y="82" text-anchor="middle">Gateway 1</text>
+<text class="ts" x="215" y="99" text-anchor="middle">holds A's WS</text>
+<text class="tn" x="215" y="112" text-anchor="middle">sub: channel:gw-1</text>
+
+<!-- Redis registry -->
+<rect class="red" x="330" y="55" width="150" height="52" rx="8" stroke-width="1.2"/>
+<text class="th" x="405" y="76" text-anchor="middle">Redis registry</text>
+<text class="ts" x="405" y="92" text-anchor="middle">B → gw-5</text>
+
+<!-- messages DB -->
+<rect class="gray" x="540" y="55" width="150" height="52" rx="8" stroke-width="1.2"/>
+<text class="ts" x="615" y="74" text-anchor="middle">messages DB</text>
+<text class="ts" x="615" y="89" text-anchor="middle">(history) + S3 files</text>
+
+<!-- Redis pub/sub bus -->
+<rect class="teal" x="200" y="230" width="320" height="46" rx="8" stroke-width="1.2"/>
+<text class="th" x="360" y="249" text-anchor="middle">Redis Pub/Sub  —  PUBLISH channel:gw-5</text>
+<text class="ts" x="360" y="265" text-anchor="middle">each gateway subscribes ONLY to its own channel</text>
+
+<!-- Gateway 5 -->
+<rect class="purple" x="440" y="330" width="130" height="60" rx="8" stroke-width="1.2"/>
+<text class="th" x="505" y="352" text-anchor="middle">Gateway 5</text>
+<text class="ts" x="505" y="369" text-anchor="middle">holds B's WS</text>
+<text class="tn" x="505" y="382" text-anchor="middle">sub: channel:gw-5</text>
+
+<!-- User B -->
+<rect class="gray" x="620" y="340" width="80" height="40" rx="8" stroke-width="1.2"/>
+<text class="ts" x="660" y="364" text-anchor="middle">User B</text>
+
+<!-- pending store -->
+<rect class="teal" x="200" y="330" width="150" height="60" rx="8" stroke-width="1.2"/>
+<text class="th" x="275" y="350" text-anchor="middle">pending store</text>
+<text class="ts" x="275" y="366" text-anchor="middle">per-user (Redis/DB)</text>
+<text class="tn" x="275" y="379" text-anchor="middle">if B OFFLINE</text>
+
+<!-- push notif -->
+<rect class="gray" x="200" y="420" width="150" height="40" rx="8" stroke-width="1.2"/>
+<text class="ts" x="275" y="444" text-anchor="middle">Push (APNs/FCM)</text>
+
+<!-- flows -->
+<line class="arr" x1="100" y1="90" x2="150" y2="90" marker-end="url(#ar)"/>
+<text class="tn" x="125" y="82" text-anchor="middle">1 send (WS)</text>
+
+<line class="arr" x1="280" y1="82" x2="330" y2="82" marker-end="url(#ar)"/>
+<text class="tn" x="305" y="74" text-anchor="middle">2 lookup B</text>
+
+<line class="arr" x1="280" y1="100" x2="540" y2="95" marker-end="url(#ar)"/>
+<text class="tn" x="440" y="118" text-anchor="middle">3 persist (always)</text>
+
+<line class="arr" x1="215" y1="120" x2="300" y2="230" marker-end="url(#ar)"/>
+<text class="tn" x="230" y="185" text-anchor="middle">4 online: publish to gw-5</text>
+
+<line class="arrG" x1="440" y1="270" x2="500" y2="330" marker-end="url(#arG)"/>
+<text class="tn" x="500" y="305" text-anchor="middle">5 deliver</text>
+
+<line class="arr" x1="570" y1="360" x2="620" y2="360" marker-end="url(#ar)"/>
+<text class="tn" x="595" y="352" text-anchor="middle">6 push WS</text>
+
+<line class="arr" x1="505" y1="330" x2="360" y2="120" marker-end="url(#ar)" stroke-dasharray="3 3"/>
+<text class="tn" x="470" y="200" text-anchor="middle" transform="rotate(-52 470 200)">ack / read receipt</text>
+
+<line class="arr" x1="250" y1="276" x2="262" y2="330" marker-end="url(#ar)"/>
+<text class="tn" x="180" y="305" text-anchor="middle">4b offline:</text>
+<text class="tn" x="180" y="316" text-anchor="middle">park</text>
+<line class="arr" x1="275" y1="390" x2="275" y2="420" marker-end="url(#ar)"/>
+
+<text class="tn" x="360" y="490" text-anchor="middle">On reconnect: gateway drains pending store for that user (ORDER BY created_at) → push → delete on ack</text>
+<text class="tn" x="360" y="505" text-anchor="middle">Targeted routing: sender looks up recipient's gateway in Redis, publishes ONLY to that channel — no broadcast, no filtering</text>
+</svg>

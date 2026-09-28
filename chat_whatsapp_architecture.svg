@@ -1,0 +1,65 @@
+<svg width="100%" viewBox="0 0 700 470" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<style>
+.teal{fill:#e0f2f1;stroke:#00897b;}
+.purple{fill:#ede7f6;stroke:#5e35b1;}
+.red{fill:#ffebee;stroke:#c62828;}
+.gray{fill:#f5f5f5;stroke:#757575;}
+.th{font-size:12px;font-weight:600;fill:#222;}
+.ts{font-size:10px;fill:#444;}
+.arr{stroke:#555;stroke-width:1.4;fill:none;}
+.note{font-size:9px;fill:#888;}
+</style>
+</defs>
+
+<rect class="gray" x="30" y="60" width="90" height="46" rx="8" stroke-width="1.2"/>
+<text class="ts" x="75" y="80" text-anchor="middle">User A</text>
+<text class="note" x="75" y="95" text-anchor="middle">(WS)</text>
+
+<rect class="purple" x="180" y="55" width="130" height="56" rx="8" stroke-width="1.2"/>
+<text class="th" x="245" y="76" text-anchor="middle">Gateway Server 1</text>
+<text class="ts" x="245" y="93" text-anchor="middle">holds A's WS conn</text>
+
+<rect class="purple" x="180" y="310" width="130" height="56" rx="8" stroke-width="1.2"/>
+<text class="th" x="245" y="331" text-anchor="middle">Gateway Server 5</text>
+<text class="ts" x="245" y="348" text-anchor="middle">holds B's WS conn</text>
+
+<rect class="gray" x="30" y="315" width="90" height="46" rx="8" stroke-width="1.2"/>
+<text class="ts" x="75" y="335" text-anchor="middle">User B</text>
+<text class="note" x="75" y="350" text-anchor="middle">(WS)</text>
+
+<rect class="red" x="380" y="55" width="140" height="46" rx="8" stroke-width="1.2"/>
+<text class="ts" x="450" y="74" text-anchor="middle">Redis registry</text>
+<text class="ts" x="450" y="89" text-anchor="middle">user → server map</text>
+
+<rect class="teal" x="380" y="150" width="140" height="46" rx="8" stroke-width="1.2"/>
+<text class="ts" x="450" y="169" text-anchor="middle">Message service</text>
+<text class="ts" x="450" y="184" text-anchor="middle">persist + route</text>
+
+<rect class="gray" x="560" y="150" width="110" height="46" rx="8" stroke-width="1.2"/>
+<text class="ts" x="615" y="169" text-anchor="middle">messages DB</text>
+<text class="ts" x="615" y="184" text-anchor="middle">+ S3 for files</text>
+
+<rect class="teal" x="380" y="240" width="140" height="46" rx="8" stroke-width="1.2"/>
+<text class="ts" x="450" y="259" text-anchor="middle">offline queue</text>
+<text class="ts" x="450" y="274" text-anchor="middle">(deliver on reconnect)</text>
+
+<line class="arr" x1="120" y1="83" x2="180" y2="83" marker-end="url(#ar)"/>
+<text class="note" x="150" y="76" text-anchor="middle">1. send</text>
+<line class="arr" x1="310" y1="78" x2="380" y2="78" marker-end="url(#ar)"/>
+<text class="note" x="345" y="71" text-anchor="middle">2. lookup B</text>
+<line class="arr" x1="290" y1="111" x2="420" y2="150" marker-end="url(#ar)"/>
+<text class="note" x="330" y="140" text-anchor="middle">3. persist</text>
+<line class="arr" x1="520" y1="173" x2="560" y2="173" marker-end="url(#ar)"/>
+<line class="arr" x1="450" y1="196" x2="450" y2="240" marker-end="url(#ar)"/>
+<text class="note" x="530" y="225" text-anchor="middle">offline → queue</text>
+<line class="arr" x1="420" y1="180" x2="300" y2="320" marker-end="url(#ar)"/>
+<text class="note" x="300" y="240" text-anchor="middle">4. online → route to Server 5</text>
+<line class="arr" x1="180" y1="338" x2="120" y2="338" marker-end="url(#ar)"/>
+<text class="note" x="150" y="331" text-anchor="middle">5. push</text>
+<line class="arr" x1="245" y1="310" x2="245" y2="111" marker-end="url(#ar)"/>
+<text class="note" x="200" y="210" text-anchor="middle">ack / read receipt</text>
+</svg>

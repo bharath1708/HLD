@@ -1,0 +1,67 @@
+<svg width="100%" viewBox="0 0 720 500" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="#555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<style>
+.teal{fill:#e0f2f1;stroke:#00897b;}
+.purple{fill:#ede7f6;stroke:#5e35b1;}
+.red{fill:#ffebee;stroke:#c62828;}
+.gray{fill:#f5f5f5;stroke:#757575;}
+.th{font-size:12px;font-weight:600;fill:#222;}
+.ts{font-size:10px;fill:#444;}
+.tn{font-size:9px;fill:#888;}
+.arr{stroke:#555;stroke-width:1.4;fill:none;}
+</style>
+</defs>
+<text class="th" x="360" y="20" text-anchor="middle" font-size="13">Uber / Ride-Sharing — architecture</text>
+
+<rect class="gray" x="20" y="70" width="80" height="38" rx="8" stroke-width="1.2"/>
+<text class="ts" x="60" y="93" text-anchor="middle">Rider</text>
+<rect class="gray" x="20" y="380" width="80" height="38" rx="8" stroke-width="1.2"/>
+<text class="ts" x="60" y="403" text-anchor="middle">Driver</text>
+
+<rect class="purple" x="150" y="65" width="130" height="48" rx="8" stroke-width="1.2"/>
+<text class="th" x="215" y="84" text-anchor="middle">Ride service</text>
+<text class="ts" x="215" y="99" text-anchor="middle">request ride (API)</text>
+
+<rect class="teal" x="150" y="375" width="130" height="48" rx="8" stroke-width="1.2"/>
+<text class="th" x="215" y="394" text-anchor="middle">Location ingest</text>
+<text class="ts" x="215" y="409" text-anchor="middle">GPS pings (WS)</text>
+
+<rect class="teal" x="330" y="375" width="90" height="48" rx="8" stroke-width="1.2"/>
+<text class="ts" x="375" y="399" text-anchor="middle">Kafka</text>
+<text class="tn" x="375" y="412" text-anchor="middle">firehose ~250k/s</text>
+
+<rect class="purple" x="330" y="180" width="150" height="60" rx="8" stroke-width="1.2"/>
+<text class="th" x="405" y="202" text-anchor="middle">Matching service</text>
+<text class="ts" x="405" y="219" text-anchor="middle">geohash query + offer</text>
+
+<rect class="red" x="530" y="180" width="150" height="60" rx="8" stroke-width="1.2"/>
+<text class="th" x="605" y="199" text-anchor="middle">Redis (GEO)</text>
+<text class="ts" x="605" y="215" text-anchor="middle">current driver loc</text>
+<text class="tn" x="605" y="229" text-anchor="middle">geohash + short TTL</text>
+
+<rect class="gray" x="530" y="290" width="150" height="46" rx="8" stroke-width="1.2"/>
+<text class="ts" x="605" y="309" text-anchor="middle">trips DB (durable)</text>
+<text class="ts" x="605" y="324" text-anchor="middle">trip lifecycle + history</text>
+
+<line class="arr" x1="100" y1="89" x2="150" y2="89" marker-end="url(#ar)"/>
+<text class="tn" x="125" y="82" text-anchor="middle">1 request</text>
+<line class="arr" x1="280" y1="95" x2="360" y2="180" marker-end="url(#ar)"/>
+<text class="tn" x="300" y="145" text-anchor="middle">2 match</text>
+<line class="arr" x1="480" y1="205" x2="530" y2="205" marker-end="url(#ar)"/>
+<text class="tn" x="505" y="197" text-anchor="middle">3 nearby?</text>
+<line class="arr" x1="100" y1="399" x2="150" y2="399" marker-end="url(#ar)"/>
+<text class="tn" x="125" y="392" text-anchor="middle">ping</text>
+<line class="arr" x1="280" y1="399" x2="330" y2="399" marker-end="url(#ar)"/>
+<line class="arr" x1="420" y1="390" x2="580" y2="240" marker-end="url(#ar)"/>
+<text class="tn" x="470" y="330" text-anchor="middle">consume → update Redis GEO</text>
+<line class="arr" x1="450" y1="240" x2="560" y2="290" marker-end="url(#ar)"/>
+<text class="tn" x="470" y="270" text-anchor="middle">persist trip</text>
+<line class="arr" x1="330" y1="220" x2="230" y2="375" marker-end="url(#ar)" stroke-dasharray="3 3"/>
+<text class="tn" x="250" y="300" text-anchor="middle">offer → accept</text>
+
+<text class="tn" x="360" y="460" text-anchor="middle">No driver accepts / none nearby → expand the geohash search radius (query neighbor cells, then wider)</text>
+<text class="tn" x="360" y="478" text-anchor="middle">Ride request = API (transactional). WebSockets = live tracking (rider watches driver approach, driver gets updates).</text>
+</svg>
